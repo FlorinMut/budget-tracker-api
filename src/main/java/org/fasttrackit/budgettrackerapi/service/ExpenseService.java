@@ -38,7 +38,7 @@ public class ExpenseService {
 
     }
 
-    // 2. Read - adica ne afisam una dintre cheltuielile din BD in functie de un criteriu dorit si daca nu gaseste, sa arunce o exceptie
+    // 2. Read - adica ne afisam una dintre cheltuielile din BD in fct de un criteriu dorit si daca nu gaseste, sa arunce o exceptie
     public Expense showExpense(long id) throws ResourceNotFoundException {
         LOGGER.info("Showing expense {}", id);
         return expenseRepository.findById(id)
