@@ -3,7 +3,8 @@ package org.fasttrackit.budgettrackerapi;
 import org.fasttrackit.budgettrackerapi.domain.Expense;
 import org.fasttrackit.budgettrackerapi.exception.ResourceNotFoundException;
 import org.fasttrackit.budgettrackerapi.service.ExpenseService;
-import org.fasttrackit.budgettrackerapi.transfer.CreateExpenseIncurred;
+import org.fasttrackit.budgettrackerapi.transfer.AddExpense;
+import org.fasttrackit.budgettrackerapi.transfer.UpdateExpense;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,24 +22,24 @@ public class ExpenseServiceIntegrationTests {
     private ExpenseService expenseService;
 
 
-    // test ca sa vedem ca putem adauga o cheltuiala pt metoda CREATE
+    // test pt metoda CREATE - ca sa vedem ca putem adauga o cheltuiala noua
     @Test
-    public void  testCreateExpense_whenValidRequest_thenReturnExpenseWithId(){
+    public void  testCreatedExpense_whenValidRequest_thenReturnExpenseWithId(){
 
-        Expense expense = createExpense();
+        Expense expense = addExpense();
 
         //asigura-te ca nu valoarea nu e nula
         assertThat(expense, notNullValue());
         assertThat(expense.getId(), greaterThan(0L));
     }
 
-    private Expense createExpense() {
-        CreateExpenseIncurred incurred = new CreateExpenseIncurred();
-        incurred.setName("Rent");
-        incurred.setAmount(650);
-        incurred.setQuantity(1);
+    private Expense addExpense() {
+        AddExpense incurredExpense = new AddExpense();
+        incurredExpense.setName("Rent");
+        incurredExpense.setAmount(650);
+        incurredExpense.setQuantity(1);
 
-        return expenseService.createExpense(incurred);
+        return expenseService.addExpense(incurredExpense);
     }
 
 
@@ -53,13 +54,55 @@ public class ExpenseServiceIntegrationTests {
     // 2. facem si testul negativ
     @Test //test inseamna ca ii putem da si Run separat, nu e doar o simpla metoda
     public void testShowExpense_whenExistingId_thenReturnRequestedExpense() throws ResourceNotFoundException {
-        Expense expense = createExpense();
+        Expense expense = addExpense();
 
         Expense retrievedExpense = expenseService.showExpense(expense.getId());
 
         assertThat(retrievedExpense.getId(), is(expense.getId()));
         assertThat(retrievedExpense.getName(), is(expense.getName()));
 
+    }
+
+    // test UPDATE EXPENSE
+    @Test
+    public void testUpdateExpense_whenValidRequestWithAllFields_thenShowUpdatedExpense() throws ResourceNotFoundException {
+        // testele sunt independente, deci trebuie sa incepem cu creare de produs pt ca nu putem updata daca nu avem macar unul
+        Expense createdExpense = addExpense();
+
+        UpdateExpense incurred = new UpdateExpense();
+        incurred.setName(createdExpense.getName() + " Edited");
+        incurred.setAmount(createdExpense.getAmount() + 10);
+        incurred.setQuantity(createdExpense.getQuantity() + 1);
+
+
+        Expense updatedExpense = expenseService.updateExpense(createdExpense.getId(), incurred);
+
+        assertThat(updatedExpense.getName(), is(incurred.getName()));
+        assertThat(updatedExpense.getName(), not(is(createdExpense.getName())));
+
+
+        assertThat(updatedExpense.getAmount(), is(incurred.getAmount()));
+        assertThat(updatedExpense.getQuantity(), is(incurred.getQuantity()));
+
+        assertThat(updatedExpense.getId(), is(createdExpense.getId()));
 
     }
+
+    //implement also negative tests for update and tests for update only some of the fields
+
+    //test pt DELETE
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void testDeleteExpense_whenExistingId_thenExpenseisDeleted() throws ResourceNotFoundException {
+
+        //prima data creez o cheltuiala noua, ca sa stiu ca am unul ca sa pot sa sterg
+        Expense addExpense = addExpense();
+
+        //apoi il sterg
+        expenseService.deleteExpense(addExpense.getId());
+
+        expenseService.showExpense(addExpense.getId());
+
+    }
+
 }

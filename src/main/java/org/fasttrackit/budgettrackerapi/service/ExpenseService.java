@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fasttrackit.budgettrackerapi.domain.Expense;
 import org.fasttrackit.budgettrackerapi.exception.ResourceNotFoundException;
 import org.fasttrackit.budgettrackerapi.persistence.ExpenseRepository;
-import org.fasttrackit.budgettrackerapi.transfer.CreateExpenseIncurred;
+import org.fasttrackit.budgettrackerapi.transfer.AddExpense;
+import org.fasttrackit.budgettrackerapi.transfer.UpdateExpense;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +33,8 @@ public class ExpenseService {
 
 
     // 1. Create - adica adaugam o cheltuiala in BD
-    public Expense createExpense(CreateExpenseIncurred incurring) {
-        LOGGER.info("Creating expense {}", incurring);
+    public Expense addExpense(AddExpense incurring) {
+        LOGGER.info("Adding expense {}", incurring);
         Expense expense = objectMapper.convertValue(incurring, Expense.class);
         return expenseRepository.save(expense);
 
@@ -47,4 +49,23 @@ public class ExpenseService {
 
     }
 
+    // 3. Update
+    public Expense updateExpense (long id, UpdateExpense incurred) throws ResourceNotFoundException {
+        LOGGER.info("Updating product {}, {}", id, incurred);
+        Expense expense = showExpense(id);
+
+        BeanUtils.copyProperties(incurred, expense);
+
+        return expenseRepository.save(expense);
+
+    }
+
+
+    // 4. Delete
+    public void deleteExpense(long id) {
+        LOGGER.info("Deleting product {}", id);
+        expenseRepository.deleteById(id);
+        LOGGER.info("Deleted product {}", id);
+
+    }
 }

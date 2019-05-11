@@ -1,6 +1,6 @@
 package org.fasttrackit.budgettrackerapi.transfer;
 
-public class CreateExpenseIncurred {
+public class UpdateExpense {
 
     private String name;
     private double amount;
@@ -32,7 +32,7 @@ public class CreateExpenseIncurred {
 
     @Override
     public String toString() {
-        return "CreateExpenseIncurred{" +
+        return "UpdateExpense{" +
                 "name='" + name + '\'' +
                 ", amount=" + amount +
                 ", quantity=" + quantity +
