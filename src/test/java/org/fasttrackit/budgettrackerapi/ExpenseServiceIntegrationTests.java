@@ -4,11 +4,14 @@ import org.fasttrackit.budgettrackerapi.domain.Expense;
 import org.fasttrackit.budgettrackerapi.exception.ResourceNotFoundException;
 import org.fasttrackit.budgettrackerapi.service.ExpenseService;
 import org.fasttrackit.budgettrackerapi.transfer.AddExpense;
+import org.fasttrackit.budgettrackerapi.transfer.ShowExpenseRequest;
 import org.fasttrackit.budgettrackerapi.transfer.UpdateExpense;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,11 +35,10 @@ public class ExpenseServiceIntegrationTests {
         assertThat(expense, notNullValue());
         assertThat(expense.getId(), greaterThan(0L));
     }
-
     private Expense addExpense() {
         AddExpense incurredExpense = new AddExpense();
         incurredExpense.setName("Rent");
-        incurredExpense.setAmount(650);
+        incurredExpense.setAmount(670);
         incurredExpense.setQuantity(1);
 
         return expenseService.addExpense(incurredExpense);
@@ -105,4 +107,25 @@ public class ExpenseServiceIntegrationTests {
 
     }
 
+    @Test
+    public void testShowExpense_whenAllCriteriaProvidedAndMatching_thenReturnFilteredResults() {
+
+        Expense addExpense = addExpense();
+
+        ShowExpenseRequest request = new ShowExpenseRequest();
+        request.setPartialName("ren");
+        request.setMinimumAmount(400.0);
+        request.setMaximumAmount(800.6);
+        request.setMinimumQuantity(1);
+
+        Page<Expense> expenses =
+                expenseService.getExpenses(request, PageRequest.of(0, 10));
+
+
+        assertThat(expenses.getTotalElements(), greaterThanOrEqualTo(1L));
+
+    }
+
 }
+
+
