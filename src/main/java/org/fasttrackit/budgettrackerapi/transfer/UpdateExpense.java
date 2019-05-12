@@ -1,7 +1,10 @@
 package org.fasttrackit.budgettrackerapi.transfer;
 
+import javax.validation.constraints.NotBlank;
+
 public class UpdateExpense {
 
+    @NotBlank
     private String name;
     private double amount;
     private int quantity;
