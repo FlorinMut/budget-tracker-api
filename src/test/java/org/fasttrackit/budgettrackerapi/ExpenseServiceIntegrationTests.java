@@ -121,7 +121,7 @@ public class ExpenseServiceIntegrationTests {
         Page<Expense> expenses =
                 expenseService.getExpenses(request, PageRequest.of(0, 10));
 
-
+        // acest assert trebuie imbunatatit mult, pt orice ch din raspuns assert that all criteria are matched
         assertThat(expenses.getTotalElements(), greaterThanOrEqualTo(1L));
 
     }
