@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fasttrackit.budgettrackerapi.domain.Expense;
 import org.fasttrackit.budgettrackerapi.exception.ResourceNotFoundException;
 import org.fasttrackit.budgettrackerapi.persistence.ExpenseRepository;
-import org.fasttrackit.budgettrackerapi.transfer.AddExpense;
-import org.fasttrackit.budgettrackerapi.transfer.ShowExpenseRequest;
-import org.fasttrackit.budgettrackerapi.transfer.UpdateExpense;
+import org.fasttrackit.budgettrackerapi.transfer.Expense.AddExpense;
+import org.fasttrackit.budgettrackerapi.transfer.Expense.ShowExpenseRequest;
+import org.fasttrackit.budgettrackerapi.transfer.Expense.UpdateExpense;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ExpenseService {

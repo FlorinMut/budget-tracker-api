@@ -1,4 +1,4 @@
-package org.fasttrackit.budgettrackerapi.transfer;
+package org.fasttrackit.budgettrackerapi.transfer.Expense;
 
 public class ShowExpenseRequest {
 
